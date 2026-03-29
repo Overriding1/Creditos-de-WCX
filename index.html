@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>CREDITOS WCX</title>
+
+<style>
+body {
+  background: radial-gradient(circle, #0b0f1a, #020617);
+  color: #e5e7eb;
+  font-family: Arial;
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+  color: gold;
+  text-shadow: 0 0 20px black;
+}
+
+#buscador {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 10px;
+  border: none;
+  margin-bottom: 10px;
+  background: #111827;
+  color: white;
+}
+
+.botones {
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 8px 12px;
+  margin: 3px;
+  border: none;
+  border-radius: 6px;
+  background: #1e293b;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background: gold;
+  color: black;
+}
+
+#contador {
+  margin-bottom: 10px;
+  color: #9ca3af;
+}
+
+.credito {
+  padding: 10px;
+  margin: 6px 0;
+  background: linear-gradient(90deg, #1e293b, #020617);
+  border-left: 4px solid gold;
+  border-radius: 6px;
+}
+
+.nombre { color: #38bdf8; font-weight: bold; }
+.autor { color: #facc15; }
+
+.fav {
+  float: right;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<h1>⚔ CREDITOS WCX ⚔</h1>
+
+<input type="text" id="buscador" placeholder="🔍 Buscar...">
+
+<div class="botones">
+  <button onclick="filtrar('todos')">Todos</button>
+  <button onclick="filtrar('blp')">Texturas (.blp)</button>
+  <button onclick="filtrar('pack')">Packs</button>
+  <button onclick="filtrar('icon')">Iconos</button>
+  <button onclick="mostrarFavoritos()">⭐ Favoritos</button>
+</div>
+
+<div id="contador"></div>
+<div id="lista"></div>
+
+<script>
+
+const raw = `
+
+ 1.-(Pack of Potion Vials) - Panda
+ 2.-- Wukong's Embrace Ability's - - Panda
+ 3.-256x256Hydra.blp - NO QUIERE CREDITOS(Razon: no se)
+ 4.-Abissal - infrenus
+ 5.-Admiral - RodOfNOD
+ 6.-Affliction - doom_sheep
+ 7.-AirElemental - Whisperwind Archer
+ 8.-Aldeian Tomes - Aldeia
+ 9.-AlmightyLizard.blp - Daenar7
+ 10.-Altar Of Darkness Pack - Ilya Alaric
+ 11.-Ancient BladeSaw (Attachment) - Mister_Haudrauf
+ 12.-Anduin Lothar - Tauer
+ 13.-Angel Call Ressurection - Darkfang
+ 14.-AnimatedEnviromentalEffectAurorasAv039 - kellym0
+ 15.-Ankh of Resurrection - Matarael
+ 16.-Annihilation [2 parts] - SFX Contest 5 Submission - JetFangInferno
+ 17.-Aqua_Blue_Diamond_Tiles_By_stonneash.blp - stonneash
+ 18.-Arachnathid.blp - zadelim
+ 19.-Arcane Observatory and Derivatives - Blizzard Entertainment, Ujimasa Hojo
+ 20.-Arcane Runeblade - Blood Raven
+ 21.-Arcane Tower Missile Recolors - doom_sheep
+ 22.-Archdruid - Dmitry Rommel
+ 23.-Archemonde.blp - FrIkY
+ 24.-Archmage Pack - Ilya Alaric
+ 25.-Archmagess Pack - Ilya Alaric
+ 26.-Armadillo by chilla_killa - chilla_killa
+ 27.-Arthas.blp - FrIkY
+ 28.-Arthas with Horse (Frostmourne version) - Kuhneghetz
+ 29.-Ascension Blade Serpent - Moy
+ 30.-Ashen Autumn Tree Wall - StonemaulMidget
+ 31.-Ashen Autumn Tree Wall - StonemaulMidget
+ 32.-Ashen_Leaves_Autumnal - StonemaulMidget
+ 33.-Ashen_Stars.blp - madcd
+ 34.-AshenTree_CoRrUpTeD_Blighted - StonemaulMidget
+ 35.-Ashenvale/Felwood_Vines_Blighted - StonemaulMidget
+ 36.-Ashkandi, Greatsword of the Brotherhood - Hyunrai
+ 37.-Auras - Lordan12
+ 38.-Auriel's Blessing - Wings [SFX Contest #6] -  - JetFangInferno
+ 39.-Auriel's Blessing - Wings [SFX Contest #6] - JetFangInferno
+ 40.-Automaton - Blood Raven, SovietElf
+ 41.-Axemaster Pack - Ilya Alaric
+ 42.-Azure Dragon Crystal Lord - General Frank
+ 43.-Azure Dragon Elementalist - General Frank
+ 44.-Azure Dragon Judicator - General Frank
+ 45.-Baby chicks stun effect - tillinghast
+ 46.-Banana Item - D.O.G.
+ 47.-Bandit Mage on Foot - Kuhneghetz
+ 48.-Bandit-Pack - DREADMAN
+ 49.-Beastmaster Pack - Ilya Alaric
+ 50.-Beeroslav the Beer Elemental - Greedy Procrastinator
+ 51.-Black Dragon - Asteroth
+ 52.-Black Empire Building Set - Mister_Haudrauf
+ 53.-Black Legion Captain v1 - AhhFreshWeeD
+ 54.-Black Legion Cavalry - johnwar
+ 55.-Black Legion Commander - johnwar
+ 56.-Black Legion General (Re-Classic) - johnwar
+ 57.-Black Legion Golem - johnwar
+ 58.-Black Legion Golem - r.ace613
+ 59.-Black Legion Grand Admiral - johnwar
+ 60.-Black Legion Infantry (Pack) - johnwar
+ 61.-Black Legion Mages (Pack) - johnwar
+ 62.-Black Legion Mages- r.ace613
+ 63.-Black Legion Marksman - johnwar
+ 64.-Black Legion Ranger - johnwar
+ 65.-Black Legion Ranger - r.ace613
+ 66.-Black Legion Risen Soldiers (Pack) - johnwar
+ 67.-Black Legion Skysoldiers (Pack) - johnwar
+ 68.-Black Legion Skysoldiers - r.ace613
+ 69.-Black Legion Soldiers (Pack) - johnwar
+ 70.-Black Legion Soldiers, Infantry and Cavalry - r.ace613
+ 71.-Black Legion Triumvirate - johnwar
+ 72.-Black Legion Triumvirate - r.ace613
+ 73.-Black Legion Triumvirate and Derivatives - Jiok
+ 74.-Black Legion Workers and Militias (Pack) - johnwar
+ 75.-Black Steel Towers & Projectile - InfernalTater
+ 76.-BlackCitadelGate - MN Lahmar
+ 77.-Blackhand - Tauer
+ 78.-Blackhand - Tauer
+ 79.-Blackhand the Destroyer - Ilya Alaric
+ 80.-BlackLegionPriestV1 - AhhFreshWeeD
+ 81.-Blademaster Pack - Ilya Alaric
+ 82.-Bleed effect - Callahan
+ 83.-Blink Strike - Blizzard Entertainment
+ 84.-Blond-Haired Blood Elf Crusader - Cavman, Hawkwing, Mr.Goblin
+ 85.-Blood Elemental Missile - Blizzard Entertainment, Xetanth87
+ 86.-Blood Elf Horse (WOWTexture) - AnthonyRiver
+ 87.-Blood Elf Swordsman (WOWTexture) - AnthonyRiver
+ 88.-Blood Elven Upgrades - Blizzard Entertainment, Zephyrius2412
+ 89.-Blood Elven Voyager - Vinz
+ 90.-Blood Oak Tree - NFWar
+ 91.-Blood Presence - Champara Bros
+ 92.-Blood Raven's Aura Pack - Blood Raven
+ 93.-Blood Raven's Aura Pack - Blood Raven
+ 94.-Bloodbeak the Berserker / ChIcKeN GrImM ReApErR - Blizzard Entertainment, Dmitry Rommel, J.Eggermont (a.k.a. Garfield), StonemaulMidget, Ujimasa Hojo
+ 95.-Bloodelf Buildings Texture - Super Mario
+ 96.-Bloodelf Experimental Units Pack - General Frank
+ 97.-Bloodelf Paladin - General Frank
+ 98.-Bloodelf Phoenix Archer - - General Frank
+ 99.-Bloodelf Phoenix Crusader - General Frank
+ 100.-Bloodelf Rogue (aka Shadowblade) - General Frank
+ 101.-Bloodelf Strider- General Frank
+ 102.-BloodElf Throw Master - minkeun0806
+ 103.-Bloodelf Warrior- General Frank
+ 104.-BloodElf-SpellThief.blp - The D3ath
+ 105.-Bloodelven Decimator - General Frank
+ 106.-BloodLust Derivatives - Blizzard Entertainment, KadoviYi
+ 107.-Bloodstone Arrows - Vinz
+ 108.-Bloodthirster - AnyNameYouWish
+ 109.-Blue Blood Sword - Kitabatake
+ 110.-Blue Bloodlust - doom_sheep
+ 111.-Blue Dragonspawn General - takakenji
+ 112.-Blue Fel Rider - donut3.5
+ 113.-Blue Slime and Green Slime - Hantoo
+ 114.-Bondage - Vinz
+ 115.-BootsOfTeleport - Mainywc3sear
+ 116.-Bow - HerrDave
+ 117.-BreathOfFireDamage - JetFangInferno
+ 118.-BreathOfFireMissile - JetFangInferno
+ 119.-Bronze Dragon - Pinachet
+ 120.-BrownVendula - RodOfNOD
+ 121.-Brutallus - Commedia (Main author), BaiyuGalan (Animation), Magnaroth (Sponsor)
+ 122.-BTN_AzureDragonElementalist - Muoteck
+ 123.-BTNAbility_Warrior_InnerRage - Blizzard Entertainment
+ 124.-BTNAbsolute - 8512590215848
+ 125.-BTNAbsoluteEnchanted - 8512590215848
+ 126.-BTNAnatomyHeart - Lightskin
+ 127.-BTNAngel - Norinrad
+ 128.-BTNArcaneProtection - Hellx-Magnus
+ 129.-BTNBalance - ApS_iCeKiSs
+ 130.-BTNBanana3 - kola
+ 131.-BTNBattery - The_Silent
+ 132.-BTNBerryBush - lelyanra
+ 133.-BTNBerserkerMurloc - Marcos DAB
+ 134.-BTNBlackNavaja - 8512590215848
+ 135.-BTNBless - 8512590215848
+ 136.-BTNBlightDagger - Panda
+ 137.-BTNBloodelfHeroSwordChampion - General Frank
+ 138.-BTNBloodelvenWarrior - General Frank
+ 139.-BTNBloodsoul - zbc
+ 140.-BTNBlueBerries - NFWar
+ 141.-BTNBonus - Moy
+ 142.-BTNBootsOfTravelNew - Mainywc3sear
+ 143.-BTNCacophonyoftheDamned - antihero
+ 144.-BTNCancelCommandButton - Moy
+ 145.-BTNchaosaura - enjoy
+ 146.-BTNchrm - 8512590215848
+ 147.-BTNcmdAttackV2 - Moy
+ 148.-BTNcrHOLYllllsong - CRAZYRUSSIAN
+ 149.-Btncrtesticontwo - CRAZYRUSSIAN
+ 150.-BTNDarkKael - Sephiroth_VII
+ 151.-BTNDeathOrder - PrinceYaser
+ 152.-BTNdeathwing - Mad
+ 153.-BTNDemonDragon - Kimbo
+ 154.-BTNDemonicSword - Moy
+ 155.-BTNDemonRise - BLazeKraze
+ 156.-BTNDemonTaskmaster - Scias
+ 157.-BTNDemonWitch - antihero
+ 158.-BTNDraconianWarmage - General Frank
+ 159.-BTNDraconianWarmage - General Frank
+ 160.-BTNDragon - ulzkii
+ 161.-BTNDragonFire - 67chrome
+ 162.-BTNElementalOrbs - VaLkYroN
+ 163.-BTNElfWarlock - Tenebis
+ 164.-BTNEliteSeigeTank - Mr.Goblin
+ 165.-BTNEliteSeigeTankHero - Mr.Goblin
+ 166.-BTNFlameAmulet - Panda
+ 167.-BTNFlameOrb - Panda
+ 168.-BTNFrostClaim - M0rbid
+ 169.-BTNGobZeppelin - Sin'dorei300
+ 170.-BTNHighWarlordNajentus - kola
+ 171.-BTNHoldCMD - Moy
+ 172.-BTNIceDagger - 8512590215848
+ 173.-BTNINV_Weapon_Halberd_11 - Blizzard Entertainment
+ 174.-BTNInvbannerpvp01 - aeman, Blizzard Entertainment
+ 175.-BTNInvbannerpvp02 - aeman, Blizzard Entertainment
+ 176.-BTNLichKing - Kwaliti
+ 177.-BTNLightHammerUpg - =X=EclipsE, Elf Knight-
+ 178.-BTNLightningDaggerBlue - 8512590215848
+ 179.-BTNLiHealingLeaf - LiOneSS
+ 180.-BTNMentality - 8512590215848
+ 181.-BTNMinorElementalShard - 8512590215848
+ 182.-BTNMoltenDagger - 8512590215848
+ 183.-BTNMoveCMD - Moy
+ 184.-BTNMuscleCharge - UgoUgo
+ 185.-BTNmylordxd - Warcraftplay
+ 186.-BTNNagaStealthviper - 8512590215848
+ 187.-BTNnagaWow - 67chrome
+ 188.-BTNNerubianWarlord - MN Lahmar
+ 189.-BTNOrbOfDarkness - PrinceYaser
+ 190.-BTNOrbofLight - NO-Bloody-Name
+ 191.-BTNPatrolCMD - Moy
+ 192.-BTNPoisonPotion - Mr.Goblin
+ 193.-BTNPortalRed - BeTaGod-
+ 194.-BTNPurpleAttackGround - Panda
+ 195.-BTNResurrect - Elenai
+ 196.-BTNRuneOfLife - NFWar
+ 197.-BTNSeaSerpent -Moy
+ 198.-BTNSindragosa - PrinceYaser
+ 199.-BTNSkullPauldron - darkdeathknight
+ 200.-BTNSkullPauldron - darkdeathknight
+ 201.-BTNSkyfireGunship.blp - Eagle XI
+ 202.-BTNSmexyNaga - Sin'dorei300
+ 203.-BTNSoul-Rip - antihero
+ 204.-BTNSoulGauntlets - Mc !
+ 205.-BTNSoulGauntlets - Mc !
+ 206.-BTNSpell_Holy_RighteousFury - Blizzard Entertainment
+ 207.-BTNSpell_Holy_SealOfSacrifice - Blizzard Entertainment
+ 208.-BTNSpell_Holy_Silence - Blizzard Entertainment
+ 209.-BTNSpell_Nature_NullifyDisease - Blizzard Entertainment
+ 210.-BTNStop - Moy
+ 211.-BTNSuccorbenoth - Kuhneghetz
+ 212.-BTNSyringeStimpack - The_Silent
+ 213.-BTNVoodoomaskNoGlow - NFWar
+ 214.-BTNWarriorStrength - Marcos DAB
+ 215.-Cactuar - tee.dubs
+ 216.-Castle Gate - Tranquil
+ 217.-Castle Tower - Tranquil
+ 218.-Castle Wall - Tranquil
+ 219.-Centaur and Derivatives - Ujimasa Hojo
+ 220.-Chameleon - Deleted member 126647
+ 221.-Chaos: Altar of Terror - General Frank
+ 222.-ChaosKnightFinal.BLP - darkdeathknight
+ 223.-ChaosOrb - (Blizzard Entertainment), Darkfang
+ 224.-Chests of Pearls Blue + Black - kellym0
+ 225.-Chicken Knife - Paillan
+ 226.-Cho'gall - Tauer
+ 227.-Cinemático Illidan - Zerox
+ 228.-Clearwing - RodOfNOD
+ 229.-Cobra - HappyCockroach
+ 230.-Commander Jarod (War of the Ancient) - Aldeia
+ 231.-Commander Jarod (War of the Ancient) - Atasha JG, Grey Knight, Tenebrae
+ 232.-Commander On Foot Pack - Ilya Alaric
+ 233.-Commander Pack - Ilya Alaric
+ 234.-Conculyst - Blood Raven
+ 235.-Copper Coin - FrIkY
+ 236.-CoralDemon.blp - Daenar7
+ 237.-corruptedkael.blp - Daenar7
+ 238.-corruptedkael.blp - Daenar7
+ 239.-Corruption Tileset - The_Silent
+ 240.-Creep Slime - Direfury
+ 241.-Creep-Spawner/Basements&Tunnels/Waygates - Em!
+ 242.-CritterTurtle - Kimbo
+ 243.-CrushingWaveDamage - JetFangInferno
+ 244.-CrushingWaveMissile - JetFangInferno
+ 245.-Crystal Ball - bisnar13
+ 246.-CrystalGolem - Mc !
+ 247.-Crystalic.blp - Vadim 647
+ 248.-Cthulu - Pins
+ 249.-Cursed Pack - RvzerBro, Blizzard Entertainment
+ 250.-Custom Water Elemental - smithyjones
+ 251.-cutefeesh - Misha
+ 252.-CW_Death_Knight.BLP - CloudWolf
+ 253.-CW_Deathknight.BLP - CloudWolf
+ 254.-Dalaran Mutants Bundle (Ujimasa's derivates) - borissuworov, Ujimasa Hojo
+ 255.-Dalaran_Building_Kirin Tor.blp - Blizzard Entertainment, Spinel
+ 256.-Dalaran_Building_Quel'dorei.blp - Blizzard Entertainment, Spinel
+ 257.-Dalaran_Building_Sin'dorei.blp - Blizzard Entertainment, Spinel
+ 258.-Dark Blade - Matarael
+ 259.-Dark Frenzy - doom_sheep
+ 260.-Dark Portal - Kwaliti
+ 261.-Dark Portal Main Menu - Killmegods
+ 262.-DarkChampion_by67chrome.blp - 67chrome
+ 263.-DarkKnight.blp - 13LUR
+ 264.-Darkness Rising - Yours Truly
+ 265.-DarkSylvanas_by67chrome.blp - 67chrome
+ 266.-Davion, the Dragon Knight - Rubellu Sidus
+ 267.-Death Frost - ratamahatta
+ 268.-Death Knight on Frost Wyrm - NhazUl
+ 269.-Death Knight Presences - Champara Bros
+ 270.-Death Knights and Derivatives - Ujimasa Hojo
+ 271.-Death Sword - Blood Raven
+ 272.-DeathBreaker2 - Afronight_76
+ 273.-Deathbringer (Death Knight) - Atasha JG
+ 274.-DeathDoomGuard_ZadeLim.blp - zadelim
+ 275.-Deathwing - Kwaliti
+ 276.-Deathwing [After Death] - daredevils
+ 277.-Demon Knight - Tarrasque
+ 278.-Demon Knight - Tarrasque
+ 279.-Demon Witch - antihero
+ 280.-Demonic Gateway (Warlock Spell) - Mister_Haudrauf
+ 281.-DemonicAura - RvzerBro, Blizzard Entertainment
+ 282.-DemonicMongrel.blp - Daenar7
+ 283.-DemonicMongrel.blp - Daenar7
+ 284.-DemonTownhall - pWn3d
+ 285.-Direfury's Footman Pack - Direfury
+ 286.-Divine Golem (variative) - Villagerino
+ 287.-Doom Guard Icon Pack - HuanJuan, Blizzard Entertainment
+ 288.-Doom Lord - Explobomb
+ 289.-Doom Ravager - MN Lahmar
+ 290.-DoomArthas - b17rider
+ 291.-Doomgaurd.blp - gondor rougue
+ 292.-DoomGuar With NEW WEAPONE (WOW WEAPONE) - KingGhot_2
+ 293.-DoomLord - MN Lahmar
+ 294.-Draconian Spear thrower - General Frank
+ 295.-Draconian Witchhunter - General Frank
+ 296.-Dragon Slayer - Moy
+ 297.-Dragonbone Golem (variative) - Villagerino
+ 298.-DragonSpawnBlue - alfredx_sotn
+ 299.-DragonSpawnGuard - MN Lahmar
+ 300.-Dreadlord Pack - Ilya Alaric
+ 301.-Druid of the Panda - debode, skin by, FrIkY
+ 302.-DruidCat - Discordus
+ 303.-Druidic Boots - Aldeia
+ 304.-Duel - Infrisios
+ 305.-Durotan - Tauer
+ 306.-Dwarf Engineer & Turret - HerrDave
+ 307.-Dwarven Buildings (Bronzebeard) - bakr
+ 308.-Dwarven Buildings (Dark Iron) - bakr
+ 309.-Dwarven Buildings (Wildhammer) - bakr
+ 310.-Dwarven Trio - General Frank
+ 311.-Dwarven Warrior Pack - Ilya Alaric
+ 312.-DwarvenShieldBreaker - Norinrad
+ 313.-El Hielo - markone
+ 314.-Elder Gorilla - Sweet Oblivion
+ 315.-Elder Shamans Bundle (Ujimasa's derivates) - Ilya Alaric
+ 316.-Eldritch Scroll (1.32) - Vinz
+ 317.-Elemental Lords Pack - Explobomb 
+ 318.-Elemental Missle - wateverks
+ 319.-Elf Worker Pack - Ilya Alaric
+ 320.-Elite Siege Engine - The Übertank - Deolrin, Kwaliti
+ 321.-Elven Boots - Matarael
+ 322.-Ember Forge & Ember Knight - Vinz (Modeling), Moy (Texturing)
+ 323.-Emperor Thaurissan - HerrDave
+ 324.-EmpyreanSigil - JetFangInferno
+ 325.-EntanglingTentacles - Chen
+ 326.-EpicRPGTileset_by67chrome.blp - 67chrome
+ 327.-Evil Eye - Direfury
+ 328.-Exp Bar - madcat2
+ 329.-Fallen Seraph Hood - Blood Raven
+ 330.-Fallen Seraph Wings - Blood Raven
+ 331.-Far Seer Pack - Ilya Alaric
+ 332.-Farm Pack - Ilya Alaric
+ 333.-Fel Orc Felhound Rider - General Frank
+ 334.-Fel Orc Warlock (Elite) - Mister_Haudrauf
+ 335.-Fel Reaver - Explobomb
+ 336.-Fel Rider - donut3.5
+ 337.-FelGuard512.blp - Moy
+ 338.-FelGuard - Koray1994
+ 339.-Felucian Flora - Fingolfin
+ 340.-Felwood Sky - Shadow44
+ 341.-Felwood_Leaves_Dark - StonemaulMidget
+ 342.-FeralPigeon - Stanakin
+ 343.-FireTemple Keeper - icewolf055
+ 344.-Fish Item Model - Retera
+ 345.-FleshJuggernaugt - Denu
+ 346.-FLICKERING LIGHT - Horror Texture Pack - Mr.Goblin
+ 347.-Footman Head - Chikenpok29
+ 348.-Footman Lordaeron HQ - Asssssvi
+ 349.-Footman Pack - Ilya Alaric
+ 350.-Footmen - Himperion
+ 351.-Footmen and Captains (Re-Classic Pack) - johnwar
+ 352.-Forge Pack - Ilya Alaric
+ 353.-Fountain of Souls - Vinz
+ 354.-Freeze - Blizzard Entertainment, Darkfang
+ 355.-Frost Bolt - Vinz
+ 356.-Frost Fury - Suselishe
+ 357.-FrostMissiles - Vinz
+ 358.-FrostmMourne.blp - FrIkY
+ 359.-Frostwyrm Skeleton Corpse (Updated) - A Void, Blizzard Entertainment
+ 360.-Frozen Skull Staff - Vortballat
+ 361.-Garrosh - Tauer
+ 362.-Gate (Demon) and Derivatives - Ujimasa Hojo
+ 363.-gem - SantoRayo[iP]
+ 364.-General On Foot - Ilya Alaric
+ 365.-General Pack - Ilya Alaric
+ 366.-General Vezax - Dentothor
+ 367.-Genesaur - Explobomb
+ 368.-Ghost Infernal - splashy5
+ 369.-Giant Mantis - tee.dubs
+ 370.-Gilneas Mounted Footman - AnthonyRiver
+ 371.-Gilneas Rifleman - AnthonyRiver
+ 372.-Gilneas Worgen Footman - AnthonyRiver
+ 373.-Glaciar Aura - Daelin
+ 374.-Gloves of Speed - Matarael
+ 375.-Gnome Tinker - Gunstrider Icon Pack - Villagerino, Blizzard Entertainment
+ 376.-Goblin Self-Repair - Icon Contest #21 - Vinz
+ 377.-Goblin War Zeppelin - ikillforeyou
+ 378.-Gold Pile - HerrDave
+ 379.-Golden Chest - HappyTauren
+ 380.-GoldOre - Ergius
+ 381.-GoodEnt.blp - Mr Wiggles
+ 382.-Gorian Reaver - Chaosium
+ 383.-Grand Blade (Item Form) - Tonberry
+ 384.-Grand Blade - Tonberry
+ 385.-Grand Crusader Dathrohan - kangyun
+ 386.-Graveyard Pack - Ilya Alaric
+ 387.-Great Elementals - Himperion
+ 388.-Great Hall Pack - Ilya Alaric
+ 389.-GreatElderHydraAcidSpewV.153 - kellym0
+ 390.-Greatsword of the Ebon Blade - Mulgrim
+ 391.-Greek Battle Helmet - Greek Battle Helmet
+ 392.-GreenGoliath - RodOfNOD
+ 393.-GreenMalachite - RodOfNOD
+ 394.-Grimtotem Chieftain - Footman16
+ 395.-Gronn - Explobomb
+ 396.-Grunt from WarCraft: Orcs and Humans - StonemaulMidget
+ 397.-Grunt Models (Re-Classic Pack) - johnwar
+ 398.-Grunt Pack - Ilya Alaric
+ 399.-Guardian (Variations) - Mister_Haudrauf
+ 400.-Guardian Blade of the Heavens - Blood Raven
+ 401.-Gul'dan - Tauer
+ 402.-Gutz variations - AnyNameYouWish
+ 403.-Halberd - Matarael
+ 404.-HalfElfCrusader.blp - Daenar7
+ 405.-Haunted Wands - JesusHipster
+ 406.-Headhunter Pack - Ilya Alaric
+ 407.-Heal- Vinz
+ 408.-Heart - republicola
+ 409.-Heart Amulet - Sin'dorei300
+ 410.-Heart of the Storm - Vinz
+ 411.-Hellfire Citadel (Outland) - Mister_Haudrauf
+ 412.-Hello Darkness My Old Friend - doom_sheep
+ 413.-Hellscream's Fist - HerrDave
+ 414.-Hemorrhage - Vinz
+ 415.-Hero Archmage on Foot - Kuhneghetz
+ 416.-Hero_BloodElf.blp - Dionesiist
+ 417.-Hero_DeathKnight - Xelthyr
+ 418.-Hero_FelArchon - PROXY
+ 419.-HeroBloodKnight - Tenebis
+ 420.-Herod, the Scarlet Champion.blp - Blood Raven
+ 421.-heromountainking.blp - Kwaliti
+ 422.-HeroPitlord2.blp - Mr.Goblin
+ 423.-HeroTaurenChieftain.blp - 67chrome
+ 424.-High Elf and Blood Elf Swordsman (Re-Classic) - johnwar
+ 425.-High Elf Buildings - bakr, Manastorm
+ 426.-HighElfMale_Mage - Tenebis
+ 427.-Holy Shield Items - Lord_T
+ 428.-Hopper Mine - RED BARON
+ 429.-Human Barracks - skrab
+ 430.-Huntress and Derivatives - Ujimasa Hojo
+ 431.-Huntresses (Re-Classic Pack) - johnwar
+ 432.-Hut (Murloc) and Derivatives - Ujimasa Hojo
+ 433.-IC16 Heart Freezer - San
+ 434.-IC16 Heart Freezer - San
+ 435.-Ice and Fire Grunts Bundle (Ujimasa's derivates) - Ilya Alaric
+ 436.-Ice Infernal - JhOtAm
+ 437.-Ice Infernal - Nety0, unknown
+ 438.-Ice Shield - Matarael
+ 439.-Ice Slime and Lava Slime - Hantoo
+ 440.-ICON CONTEST #21 - Nerubian Force - Villagerino
+ 441.-Icons to Models Pack - Kenathorn
+ 442.-IcyGhost - PrMosquito
+ 443.-IcyGhostShow - PrMosquito
+ 444.-Illidan.blp - Dionesiist
+ 445.-IllidanDark.blp - Darkholme
+ 446.-Illusion spawn effect / AIilTarget edits - doom_sheep
+ 447.-Improved Golems - General Frank
+ 448.-Income and Prosperity - Darkfang
+ 449.-Infernal - b17rider
+ 450.-Infernal - Burning_Dragoon5
+ 451.-Infernal Bulwark - Yours Truly
+ 452.-Infernal_Catapult - CreatorD3292
+ 453.-Infernal_Mask - -Peper-
+ 454.-InfernalBallista - Carefree World
+ 455.-InfernalDestroyer - Sunchips
+ 456.-InfernalWheeledWarrior - Freddyk
+ 457.-Inferno Knight - Tarrasque
+ 458.-InquisitorKnight.blp - BeTaGod-
+ 459.-Invasion vine - Callahan
+ 460.-Invoker's Orb - Grey Knight
+ 461.-It's a bear trap! - General Frank
+ 462.-Item - GoldCoins - Tr!KzZ
+ 463.-Item - rar-archive - Scythy Dervish
+ 464.-item models - terrio
+ 465.-ItemAnimalSkullStagV109 - kellym0
+ 466.-Izual.blp - Blood Raven
+ 467.-Jaguar's Eye - Blizzard Entertainment
+ 468.-Jaina.blp - zadelim
+ 469.-Jaina - ossus
+ 470.-Javelin - Matarael
+ 471.-Kangaroo Rat - Alethos
+ 472.-Kilrogg Deadeye - Tauer
+ 473.-King Anduin Wrynn - Stefan.K
+ 474.-King Dodongo & Dodongos - Mister_Haudrauf
+ 475.-Knight.blp - Deleted member 157129
+ 476.-Knight Pack - Ilya Alaric
+ 477.-Knight, Othmar Garithos, and Derivatives - Ujimasa Hojo
+ 478.-KnightOfOrder.blp - FrIkY
+ 479.-Konstrukt_FlameThrowerEffektAttachment - Talon the Mage
+ 480.-Kul Tiras Captain (WOW Texture) - AnthonyRiver
+ 481.-Kul Tiras Knight (WOWTexture) - AnthonyRiver
+ 482.-Kultiras Buildings - bakr
+ 483.-Kultiras Structures and Doodads - bakr
+ 484.-Lady Liadrin - johnwar
+ 485.-LargePotionBlue - Tyranda10
+ 486.-Lava Elemental - Hantoo
+ 487.-Leech (Black) - Fingolfin
+ 488.-Leech (Yellow) - Fingolfin
+ 489.-Lei Shen - BaiyuGalan, Commedia
+ 490.-LevelQQDSJaian_by67chrome.blp - 67chrome
+ 491.-Leviathan.BLP - BeTaGod-
+ 492.-Leviathan - MangakaDark
+ 493.-Lich Pack - Ilya Alaric
+ 494.-Light Feather - Kuhneghetz
+ 495.-LightningElemental - alfredx_sotn
+ 496.-Lindormr Dragon - olofmoleman
+ 497.-Lizard Spearman - Gluma
+ 498.-Lizardman Warrior - Gluma
+ 499.-Lor'themar - kangyun
+ 500.-Lor'themar Theron - Aldeia
+ 501.-Lord Hyperion - General Frank
+ 502.-Lord_T's Ogre Drummer - Lord_T
+ 503.-Lordaeron Buildings - bakr
+ 504.-Lost Soul - RightField
+ 505.-LotR Orc Pack - HerrDave
+ 506.-Lotr Troll Pack - HerrDave
+ 507.-LunaMoth - RodOfNOD
+ 508.-Magi Robe - Matarael
+ 509.-Magical Wall! - stan0033
+ 510.-Magma Elemental TC - SuPa-
+ 511.-Magmasaur.blp - Daenar7
+ 512.-Marketplace and Derivatives - Blizzard Entertainment, Ujimasa Hojo
+ 513.-Markswomen Pack - Ilya Alaric
+ 514.-Marshal Pack - Ilya Alaric
+ 515.-Meat - InfernalTater
+ 516.-MechanicalElemental - ChirusHighwind
+ 517.-Medieval Buildings: The complete collection. - Mr. Bob
+ 518.-Militia Pack - Ilya Alaric
+ 519.-Mine - Lord-T-Rex
+ 520.-Minotaur.blp - zadelim
+ 521.-Mo'arg Overlord - FerSZ, Murlocologist
+ 522.-Mograine.blp - Blood Raven
+ 523.-Monkey - Sweet Oblivion
+ 524.-Monument Of Honor / Altar of Honor - Mister_Haudrauf
+ 525.-MorphoBlue - RodOfNOD
+ 526.-MortarTeam Pack - Ilya Alaric
+ 527.-Mountain Gorilla - Sweet Oblivion
+ 528.-Mur'loc Mounted Allosaurus - kellym0
+ 529.-Murloc Fishe'man - Hantoo
+ 530.-Murloc Fisher - willydawiller
+ 531.-Murloc Town Hall - SamPo
+ 532.-MurSophEmperor - Retera
+ 533.-Mushura - By Callahan - Callahan
+ 534.-Myrmidon Pack - Ilya Alaric
+ 535.-Naga Brute / Giant Murloc (Low Definition) - Bleeq (Other), Dominus15 (Idea/Request)
+ 536.-Naga Deep Stalker - Misha
+ 537.-Naga Medusa - Tarrasque
+ 538.-Naga Royal Guard - Tarrasque
+ 539.-Naga Sword - SirNathan
+ 540.-NagaDeathKnight - Misha
+ 541.-NagaDeathKnight_by67chrome.blp - 67chrome
+ 542.-NagaMyrmidon.blp - Dentothor
+ 543.-NagaSiren.blp - Daenar7
+ 544.-Nature Heal / Regeneration, Swirling Fire Buff, Shadow Buff, Sun Buff - doom_sheep
+ 545.-NazjatarLeviathan.blp - Denu
+ 546.-NecroStronghold - HappyTauren
+ 547.-Nerubian Headwear - Blood Raven
+ 548.-NightElfDeathKnight_by67chrome.blp - 67chrome
+ 549.-Nightmare Sheep - Kuhneghetz
+ 550.-ObsidianScarab.blp - Daenar7
+ 551.-Ogre (One-Headed) and Derivatives - Ujimasa Hojo
+ 552.-Ogre Legion Models (Re-Classic Pack) - johnwar
+ 553.-Ogre Lord - Filip95
+ 554.-OgreDeathKnight - Sin'dorei300
+ 555.-OgreGladiator - Norinrad
+ 556.-Old God Pack - Explobomb
+ 557.-Oni - The Reddish Ogre - Shido		
+ 558.-Orb of Blood - General Frank
+ 559.-Orb of Darkness - General Frank
+ 560.-Orb of Dragons - General Frank
+ 561.-Orb of Fire - General Frank
+ 562.-Orb of Ice - General Frank
+ 563.-Orb of Light - General Frank
+ 564.-Orb of Lightning - General Frank
+ 565.-Orb of Poison - General Frank
+ 566.-Orb of Water - General Frank
+ 567.-OrbFrostNew - (Blizzard Entertainment), Darkfang
+ 568.-Orbs of Frostcraft - Vinz
+ 569.-Orc Warlock Spell and Upgrades - TheHuntress
+ 570.-Orcish Barracks Pack - Ilya Alaric
+ 571.-Orcish Elders Pack - Ilya Alaric
+ 572.-Orgrim Doomhammer - Tauer
+ 573.-Orgrimmar Bone Fire - Dark Hunter1357
+ 574.-Overhead Buff Pack - HerrDave
+ 575.-Owl Moon Priestess - Retera
+ 576.-Pack abilities for Hero Naga Mage - RvzerBro, Blizzard Entertainment
+ 577.-Pack abilities for Hero Naga Mage - RvzerBro, Blizzard Entertainment
+ 578.-Pack Arrows - RvzerBro, Blizzard Entertainment
+ 579.-Pack of Aura Icons - Panda
+ 580.-Paladan's Temple - Mr. Bob
+ 581.-Paladin Pack - Ilya Alaric
+ 582.-Paladin With Sword Pack - Ilya Alaric
+ 583.-Paladin's Temple NUMBER 2 - Mr. Bob
+ 584.-PaleVal'kyrSvH - Blizzard Entertainment, Sellenisko
+ 585.-Pandaren Building1 - killst4r
+ 586.-Pandaren Building2 - killst4r
+ 587.-Pandaren Building3 - killst4r
+ 588.-Pandaren Building4 - killst4r
+ 589.-Pandaren Building5 - killst4r
+ 590.-Pandaren Building6 - killst4r
+ 591.-Pandaren Building7 - killst4r
+ 592.-Pandaren Buildings - bakr
+ 593.-PapilioBlue - RodOfNOD
+ 594.-Peon Pack - Ilya Alaric
+ 595.-Phoenix (Re-Classic) - johnwar
+ 596.-Pickaxe Item - Kenathorn
+ 597.-Pig Farm Pack - Ilya Alaric
+ 598.-Pit_Avelgoth2 - Sheyd
+ 599.-Plated Footman (Now without hero glow!) - HappyTauren, Plated Footman (Now without hero gl
+ 600.-Podoboo - Thrikodius
+ 601.-Poison Elemental - icewolf055
+ 602.-Poison Elemental - Kuhneghetz
+ 603.-PolarBear.blp - FrIkY
+ 604.-PotionHealingSmall - epsilon
+ 605.-PotionOfInvisibilty - Xazuki
+ 606.-PotionOfInvulnerability - Xazuki
+ 607.-Power Orb - Kitabatake
+ 608.-Power-up Orbs pack - General Frank
+ 609.-Priest Pack - Ilya Alaric
+ 610.-Prince Kael'thas - Blizzard Entertainment, Zephyrius2412
+ 611.-Prismatic elemental - The_Swamp_Warrior
+ 612.-Prometheus.blp - Daenar7
+ 613.-Prometheus.blp - Daenar7
+ 614.-Purple Armored Hydra - Retera
+ 615.-Pyrolia - Callahan
+ 616.-Quel Thalas Trees - HerrDave
+ 617.-Radiance - Vinz
+ 618.-Raider Models (Re-Classic Pack) - johnwar
+ 619.-Random Auras Pack - marcus158
+ 620.-Random Item Box (10 Icons Texture) - stonneash
+ 621.-Raptors - Hantoo
+ 622.-Red Dragon (Vaelastraz) - daredevils
+ 623.-RedApple - Sunchips
+ 624.-Redbeard Mountain King - Retera
+ 625.-Renault Morgraine - kangyun
+ 626.-Revenant.blp - NO QUIERE CREDITOS(Razon: no se)
+ 627.-Rifleman and Derivatives - Jiok
+ 628.-Rifleman Pack - Ilya Alaric
+ 629.-RiflemanElite - TurieL
+ 630.-ringofpower - RightField
+ 631.-RingOfProtection - republicola
+ 632.-Ritual Dagger (from Patch 1.31.1) - Blizzard Entertainment, bakuma
+ 633.-Roadrunner - Alethos
+ 634.-Rock Golem Variations (WoW style, Siege Mode) - Bleeq
+ 635.-RollingMine - migB
+ 636.-RoyalGuard - Tarrasque
+ 637.-RuneClock - Kino
+ 638.-Runestone Weaponry & Armory - Blood Raven
+ 639.-RunicBerserker.blp - Daenar7
+ 640.-RunicColossus.blp - Daenar7
+ 641.-RunicDefender.BLP - Daenar7
+ 642.-RunicDreadcannon.blp - Daenar7
+ 643.-RunicEarthaur.blp - Daenar7
+ 644.-RunicEinherjar.blp - Daenar7
+ 645.-RunicHierophant.blp - Daenar7
+ 646.-RunicMaid.blp - Daenar7
+ 647.-runicobject - Kirym
+ 648.-RunicRavenWitch.BLP - Daenar7
+ 649.-RunicRavenWitchMorphed.BLP - Daenar7
+ 650.-RunicRhinOx.blp - Daenar7
+ 651.-RunicRuneKeeper.blp - Daenar7
+ 652.-RunicSniper.blp - Daenar7
+ 653.-RunicSoldiers.blp - Daenar7
+ 654.-RunicThane.blp - Daenar7
+ 655.-RunicWarlord.blp - Daenar7
+ 656.-RunicWarrioress.blp - Daenar7
+ 657.-RunicWitch.blp - Daenar7
+ 658.-Safe - Mike
+ 659.-Samwise Didier's Ride the Lightning Icon Pack - Blizzard Entertainment (Art by Samwise Didier), Xetanth87 (Crop, resize, add margin, upload)
+ 660.-SandElemental - icewolf055, MiniMage
+ 661.-Satyr.blp - Dionesiist
+ 662.-Scarlet Crusade Archbishop.blp - Blood Raven
+ 663.-Scarlet Crusade Commander.blp - Blood Raven
+ 664.-Scarlet Crusader.blp - Blood Raven
+ 665.-Scarlet Crusaders (Pack) - HerrDave
+ 666.-Scarlet Monastery - HerrDave
+ 667.-Sea Giant Emperor - Retera
+ 668.-Sentry Amulet (set) - Villagerino (editing), Blizzard Entertainment (original media)
+ 669.-Serpent Knight - Gluma
+ 670.-Shadow Soldiers (Pack) - johnwar (Model), 67chrome (Texture)
+ 671.-ShadowInfernal - UgoUgo
+ 672.-Shalamayne - BaiyuGalan, Aldeia
+ 673.-Shaman Pack - Ilya Alaric
+ 674.-ShimmeringPortal - JetFangInferno
+ 675.-Shiva's Wings - JetFangInferno
+ 676.-Shocking Wave Aura and Variations - biridius (modelling), stan0033 (modelling)
+ 677.-Shots Vol. I - Vinz
+ 678.-Silver Coin - FrIkY
+ 679.-Silverhand Buildings - bakr
+ 680.-Silvermoon Castle - Ilya Alaric
+ 681.-Silvermoon_CliffSquareTiles.blp - FunkyDude44
+ 682.-Silvermoon_Squaretiles.blp - FunkyDude44
+ 683.-SilvermoonDoodads1.blp - FunkyDude44
+ 684.-Simple made Heroes Pack - Ilya Alaric
+ 685.-Simple Spell Pack v1.3 - -Berz-
+ 686.-Simple White Rotating Bag - Captain Bacon, ILH
+ 687.-SISTEMA DE SPAWN - CyraxMustard
+ 688.-Skeletal Dragon / Frostwyrm Remake - Mister_Haudrauf, olofmoleman
+ 689.-SkulborbByZerox - Zerox
+ 690.-SkullDemon.blp - Daenar7
+ 691.-Snail & Slug - Kuhneghetz
+ 692.-Sorceress Pack - Ilya Alaric
+ 693.-Soul Harvester Scythe - Blood Raven
+ 694.-Spearthrower Pack - Ilya Alaric
+ 695.-Special Crystal Shield and Lamps - Kael'thasBloodstrider32
+ 696.-Spell Thief (WOWTexture) - AnthonyRiver
+ 697.-Spellbreaker Pack - Ilya Alaric
+ 698.-Spider Broodmother (Re-Classic) - HerrDave, johnwar
+ 699.-Spider Warlord - Tarrasque
+ 700.-Spiders Pack HQ - MangakaDark
+ 701.-SpiritHealer - Discordus
+ 702.-Staff - HerrDave
+ 703.-Staff - Matarael
+ 704.-Stone Wall Y connector - Kitabatake
+ 705.-Stormwind Footman (WOWTexture) - AnthonyRiver
+ 706.-Stormwind Knight (WOWTexture) - AnthonyRiver
+ 707.-Stormy Castle Citadel - Illidan(Evil)X
+ 708.-Stromgarde Buildings - bakr
+ 709.-Stromgarde Footman (WOWTexture) - AnthonyRiver
+ 710.-Stromgarde Knight (WOWTexture) - AnthonyRiver
+ 711.-stygian magus - Afronight_76
+ 712.-Succorbenoth - Kuhneghetz
+ 713.-Succubus Death Walker.blp - The D3ath
+ 714.-SwampSlime-Pack - DREADMAN
+ 715.-Sword - HerrDave
+ 716.-Sword of Supreme - Fang
+ 717.-SwordOfKingVarianWrynnByPaladinjst - paladinjst
+ 718.-Tauren Heritage Armor - AnthonyRiver
+ 719.-Tauren Horde Warrior(WOW Texture) - AnthonyRiver
+ 720.-Temp_1.blp - Dionesiist
+ 721.-TemplateItem - RightField
+ 722.-TerrainArt_Ashenvale_Ashen_Leaves_CoRrUpTeD - StonemaulMidget
+ 723.-TerrainArt_Ashenvale_Ashen_Leaves_CoRrUpTeD - StonemaulMidget
+ 724.-TerrainArtFelwoodFelwood_poisonD.BLP - LOTR
+ 725.-Thane Pack - Ilya Alaric
+ 726.-The Butcher's Cleaver - RvzerBro, Blizzard Entertainment
+ 727.-The Demon of Retera - Retera
+ 728.-The Greatest, Eldest, of All Hydras - kellym0
+ 729.-The Staff of Love - RvzerBro, Blizzard Entertainment, Nival
+ 730.-The Void Lord - Callahan
+ 731.-Tichondrius.blp - Deleted member 238226
+ 732.-Tidebaron - dickxunder
+ 733.-Titan's Guardian - Misha, Thrikodius
+ 734.-TitanSalamander.blp - Daenar7
+ 735.-TitanSerpent.blp - Daenar7
+ 736.-Tome of Balance - Aldeia
+ 737.-Tome Of Retraining - Mc !
+ 738.-Training Dummy - communist_orc
+ 739.-Treasure Chest: Silver - StonemaulMidget
+ 740.-Treasure Guardian - diosilva16
+ 741.-treasurechest.blp - Stanakin
+ 742.-Troll Pack (War of the Ring) - HerrDave
+ 743.-Troll Pack (War of the Ring) HQ - MangakaDark
+ 744.-Turtle devour - Sun gate
+ 745.-Tyrael the Archangel - expresso
+ 746.-Tyrant - Matarael
+ 747.-Undead Burrow - A Void, Blizzard Entertainment
+ 748.-Undead Lindormr Dragon - olofmoleman
+ 749.-Undead-Themed Items - RvzerBro, Blizzard Entertainment
+ 750.-UndeadTransportShip - Dmitry Rommel
+ 751.-Various Buffs - Hate
+ 752.-Varsaigen the Stormlord - Misha, Thrikodius
+ 753.-Virga's Arc (Missile & Attachment) - ILH
+ 754.-Void Missiles - Vinz
+ 755.-Void Rain - Vinz
+ 756.-Voidspawn Building Pack - Retera
+ 757.-VoidWalker Aura - Lichkings slave
+ 758.-Warbeast Kraal - Galendor an'Kreil
+ 759.-Warbeast Kraal - HuanJuan
+ 760.-Warchief Thrall (Re-Classic) - johnwar
+ 761.-Warglaive of Azzinoth (High-poly version) - Deolrin, FrIkY
+ 762.-Warlock Pack - Ilya Alaric
+ 763.-Warlord Pack - Ilya Alaric
+ 764.-Watch Tower Pack - Ilya Alaric
+ 765.-Watcher in the Water - Vinz
+ 766.-WatcherDeathKnight_by67chrome.blp - 67chrome
+ 767.-Water Elemental and Sea Elemental (Re-Classic) - johnwar
+ 768.-Water/frost Element - Lichkings slave
+ 769.-WaterElemental - alfredx_sotn
+ 770.-WaterElementalMissile - Lakimen
+ 771.-WaterTemple Keeper - icewolf055
+ 772.-WestCliff_256.blp - WerBackIII
+ 773.-Westfall_Grass.blp - WerBackIII
+ 774.-WhiteMorpho - RodOfNOD
+ 775.-Widow Poison / Spider Toxin - Vinz
+ 776.-Wight & spells - Villagerino
+ 777.-Wind Serpent - Darkfang
+ 778.-Windwalk - Vinz
+ 779.-Wolfrider Pack - Ilya Alaric
+ 780.-Wood Elf Pack - zadelim
+ 781.-Worker Pack - Ilya Alaric
+ 782.-World Of Warcraft Sapphiron - daredevils, http://chaosrealm.info/topic/770065
+ 783.-WotLK - Forsaken Plague Catapult - kangyun
+ 784.-Wrath of The Archangels [SFX Contest #6] - JetFangInferno
+ 785.-YellowSwallowtail - RodOfNOD
+ 786.-Young Anduin Lothar - Tauer
+ 787.-Ziggurat Pack - Ilya Alaric
+ 788.-ZL_PriestessOfTheDeathMoonKnight.blp - zadelim
+ 789.-Zodiac Warrior - dickxunder
+
+`;
+
+let datos = raw.split("\n")
+  .map(l => l.trim())
+  .filter(l => l !== "")
+  .map(l => {
+    let partes = l.split(" - ");
+    return {
+      original: l,
+      nombre: partes[0] || "",
+      autor: partes[1] || "Desconocido",
+      fav: false
+    };
+  });
+
+const lista = document.getElementById("lista");
+const buscador = document.getElementById("buscador");
+const contador = document.getElementById("contador");
+
+let modo = "todos";
+
+function render(filtroTexto = "") {
+  lista.innerHTML = "";
+  let count = 0;
+
+  datos.forEach((d, i) => {
+    let texto = (d.nombre + d.autor).toLowerCase();
+
+    if (!texto.includes(filtroTexto.toLowerCase())) return;
+
+    if (modo === "blp" && !d.nombre.toLowerCase().includes(".blp")) return;
+    if (modo === "pack" && !d.nombre.toLowerCase().includes("pack")) return;
+    if (modo === "icon" && !d.nombre.toLowerCase().includes("btn")) return;
+    if (modo === "fav" && !d.fav) return;
+
+    const div = document.createElement("div");
+    div.className = "credito";
+
+    div.innerHTML = `
+      <span class="fav" onclick="toggleFav(${i})">${d.fav ? "⭐" : "☆"}</span>
+      <div class="nombre">${d.nombre}</div>
+      <div class="autor">👤 ${d.autor}</div>
+    `;
+
+    lista.appendChild(div);
+    count++;
+  });
+
+  contador.textContent = `Mostrando ${count} de ${datos.length}`;
+}
+
+function toggleFav(i) {
+  datos[i].fav = !datos[i].fav;
+  render(buscador.value);
+}
+
+function filtrar(tipo) {
+  modo = tipo;
+  render(buscador.value);
+}
+
+function mostrarFavoritos() {
+  modo = "fav";
+  render(buscador.value);
+}
+
+buscador.addEventListener("input", e => {
+  render(e.target.value);
+});
+
+render();
+
+</script>
+
+</body>
+</html>
